@@ -1,0 +1,17 @@
+add_namespace = game_of_life
+
+country_event = {
+	id = game_of_life.1
+	is_triggered_only = yes
+	hidden = yes
+
+	option = {
+		name = "GoL update"
+		gol_update_universe = yes
+	}
+
+	option = {
+		name = "GoL restart"
+		gol_create_universe = yes
+	}
+}

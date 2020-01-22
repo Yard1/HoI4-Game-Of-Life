@@ -1,0 +1,87 @@
+scripted_gui = {
+
+	gol_gui = {
+		context_type = player_context
+		window_name = "gol_gui_window"
+		visible = {
+			has_variable = gol_universe_dimensions
+			#check_variable = {
+			#	gol_opened > 0
+			#}
+		}
+		ai_enabled = {
+			always = no
+		}
+		dynamic_lists = {
+			gol_universe_grid = {
+				array = gol_universe
+				change_scope = no
+				entry_container = gol_universe_grid_cell
+			}
+		}
+		effects = {
+			gol_cell_click = {
+				if = {
+					limit = {
+						check_variable = {
+							gol_universe^i = 1
+						}
+					}
+					set_variable = {
+						gol_universe^i = 2
+					}
+				}
+				else = {
+					set_variable = {
+						gol_universe^i = 1
+					}
+				}
+			}
+		}
+
+		properties = {
+			gol_cell = {
+				frame = v
+			}
+		}
+	}
+
+	gol_on_hourly_gui = {
+		context_type = player_context
+		window_name = "gol_on_hourly_container"
+
+		visible = {
+			is_ai = yes
+			has_country_flag = gol_on_hourly
+		}
+
+		ai_enabled = {
+			always = yes
+		}
+
+		ai_test_variance = 0
+		ai_test_interval = 1
+
+		effects = {
+			gol_on_hourly_click = {
+				var:global.gol_player = {
+					if = {
+						limit = {
+							has_variable = gol_universe_dimensions
+						}
+						gol_update_universe = yes
+					}
+				}
+			}
+		}
+
+		ai_weights = {
+			gol_on_hourly_click = {
+				ai_will_do = {
+					factor = 100
+				}
+			}
+		 }
+	}
+	
+}

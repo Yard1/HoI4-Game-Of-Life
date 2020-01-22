@@ -1,0 +1,19 @@
+on_actions = {
+	on_startup = {
+		effect = {
+			every_country = {
+				limit = { is_ai = no }
+				set_variable = {
+					gol_universe_dimensions = 64
+				}
+				gol_create_universe = yes
+				set_variable = { global.gol_player = THIS }
+			}
+			random_country = {
+				limit = { is_ai = yes }
+				set_variable = { global.gol_on_hourly = THIS }
+				set_country_flag = gol_on_hourly
+			}
+		}
+	}
+}

@@ -1,0 +1,68 @@
+guiTypes = {
+	containerWindowType = {
+		name = "gol_gui_window"
+		position = { x = 0 y = 0 }	
+		
+		size = { width = 548 height = 512 }
+		
+		fade_time = 300
+		fade_type = linear
+		moveable = yes
+		show_sound = menu_open_window
+		click_to_front = yes
+        
+		orientation = center
+        
+		background = {
+			name = "Background"
+			quadTextureSprite = "GFX_tiled_plain_bg"
+		}
+		
+		containerWindowType = {
+			name = "gol_universe_grid_container"
+			position = {x = 0 y = 0 }
+			size = {width = 528 height = 528 } 
+			Orientation = upper_left
+
+			background = {
+				name = "Background"
+				quadTextureSprite = "GFX_tiled_window_1b_thin_border"
+			}
+			
+			gridboxtype = {
+				name = "gol_universe_grid"
+				position = { x = -248 y = 8 }
+				size = { width = 512 height = 100%% }
+				slotsize = { width = 8 height = 8 }
+				max_slots_horizontal = 64
+				max_slots_vertical = 64
+			}
+		}
+	}
+
+	containerWindowType = {
+		name = "gol_universe_grid_cell"
+		position = { x = 0 y = 0}	
+		size = { width = 8 height = 8 }
+
+		buttonType = {
+			name ="gol_cell"
+			spriteType = "GFX_gol_cell"
+			frame = 1
+			position = { x= 0 y = 0 }
+		}	
+	}
+
+	containerWindowType = {
+		name = "gol_on_hourly_container"
+		position = { x = 0 y = 0}	
+		size = { width = 8 height = 8 }
+
+		buttonType = {
+			name ="gol_on_hourly"
+			spriteType = "GFX_gol_cell"
+			frame = 1
+			position = { x= 0 y = 0 }
+		}	
+	}
+}

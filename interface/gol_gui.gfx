@@ -1,0 +1,7 @@
+spriteTypes = {	
+    spriteType = {
+        name = "GFX_gol_cell"
+        texturefile = "gfx/game_of_life/gol_cell.tga"
+        noOfFrames = 2
+    }
+}

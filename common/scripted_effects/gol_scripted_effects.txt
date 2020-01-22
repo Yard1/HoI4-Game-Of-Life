@@ -1,0 +1,581 @@
+gol_create_universe = {
+	set_temp_variable = {
+		gol_universe_size = gol_universe_dimensions
+	}
+	multiply_temp_variable = {
+		gol_universe_size = gol_universe_dimensions
+	}
+	clear_array = gol_universe
+	resize_array = {
+		array = gol_universe
+		size = gol_universe_size
+		value = 1
+	}
+	clear_array = gol_buffer_first_row
+	resize_array = {
+		array = gol_buffer_first_row
+		size = gol_universe_dimensions
+		value = 1
+	}
+	clear_array = gol_buffer_1
+	resize_array = {
+		array = gol_buffer_1
+		size = gol_universe_dimensions
+		value = 1
+	}
+	clear_array = gol_buffer_2
+	resize_array = {
+		array = gol_buffer_2
+		size = gol_universe_dimensions
+		value = 1
+	}
+}
+
+gol_populate_universe = {
+	
+}
+
+gol_update_universe = {
+	#log = "UPDATING UNIVERSE"
+	for_loop_effect = {
+		start = 0
+		end = gol_universe_dimensions
+		value = i
+
+		set_variable = {
+			gol_buffer_first_row^i = gol_universe^i
+		}
+	}
+	set_temp_variable = {
+		end_idx = gol_universe_dimensions
+	}
+	for_loop_effect = {
+		start = 0
+		end = gol_universe_dimensions
+		value = i
+		#log = "row: [?i]"
+		set_temp_variable = {
+			idx = i
+		}
+
+		for_loop_effect = {
+			start = 0
+			end = gol_universe_dimensions
+			value = j
+			#log = "col: [?j]"
+			set_temp_variable = {
+				current_row = i
+			}
+			set_temp_variable = {
+				next_row = current_row
+			}
+			add_to_temp_variable = {
+				next_row = 1
+			}
+			set_temp_variable = {
+				nextnext_row = next_row
+			}
+			add_to_temp_variable = {
+				nextnext_row = 1
+			}
+			set_temp_variable = {
+				current_column = j
+			}
+			set_temp_variable = {
+				current_index = current_row
+			}
+			multiply_temp_variable = {
+				current_index = gol_universe_dimensions
+			}
+			add_to_temp_variable = {
+				current_index = current_column
+			}
+
+			if = {
+				limit = {
+					check_variable = {
+						current_row = 0
+					}
+				}
+				gol_get_neighbors_positions = yes
+				gol_calculate_neighbors_sum = yes
+
+				if = {
+					limit = { check_variable = { neighbors_sum = 3 } }
+					set_variable = {
+						gol_buffer_1^current_column = 2
+					}
+				}
+				else_if = {
+					limit = { check_variable = { neighbors_sum = 4 } }
+					set_variable = {
+						gol_buffer_1^current_column = gol_universe^current_index
+					}
+				}
+				else = {
+					set_variable = {
+						gol_buffer_1^current_column = 1
+					}
+				}
+			}
+			set_temp_variable = {
+				current_row = i
+			}
+			add_to_temp_variable = {
+				current_row = 1
+			}
+			add_to_temp_variable = {
+				current_index = gol_universe_dimensions
+			}
+			gol_get_neighbors_positions = yes
+			if = {
+				limit = {
+					check_variable = {
+						nextnext_row = gol_universe_dimensions
+					}
+				}
+				gol_calculate_neighbors_sum_buffer_first_row = yes
+
+			}
+			else = {
+				gol_calculate_neighbors_sum = yes
+			}
+
+			if = {
+				limit = { check_variable = { neighbors_sum = 3 } }
+				set_variable = {
+					gol_buffer_2^current_column = 2
+				}
+			}
+			else_if = {
+				limit = { check_variable = { neighbors_sum = 4 } }
+				set_variable = {
+					gol_buffer_2^current_column = gol_universe^current_index
+				}
+			}
+			else = {
+				set_variable = {
+					gol_buffer_2^current_column = 1
+				}
+			}
+		}
+
+		for_loop_effect = {
+			start = 0
+			end = gol_universe_dimensions
+			value = k
+			#log = "gol_buffer_1^[?k] = [?gol_buffer_1^k]"
+			set_temp_variable = {
+				current_index = idx
+			}
+			multiply_temp_variable = {
+				current_index = gol_universe_dimensions
+			}
+			add_to_temp_variable = {
+				current_index = k
+			}
+			set_variable = {
+				gol_universe^current_index = gol_buffer_1^k
+			}
+			set_variable = {
+				gol_buffer_1^k = gol_buffer_2^k
+			}
+		}
+		for_loop_effect = {
+			start = 0
+			end = gol_universe_dimensions
+			value = k
+			#log = "gol_buffer_2^[?k] = [?gol_buffer_2^k]"
+		}
+	}
+
+	#log = "DONE UPDATING UNIVERSE"
+}
+
+gol_get_neighbors_positions = {
+	set_temp_variable = {
+		neighbor_row_above = current_row
+	}
+	subtract_from_temp_variable = {
+		neighbor_row_above = 1
+	}
+
+	if = {
+		limit = {
+			check_variable = {
+				neighbor_row_above < 0
+			}
+		}
+		set_temp_variable = {
+			neighbor_row_above = gol_universe_dimensions
+		}
+		subtract_from_temp_variable = {
+			neighbor_row_above = 1
+		}
+	}
+
+	set_temp_variable = {
+		neighbor_row_below = current_row
+	}
+	add_to_temp_variable = {
+		neighbor_row_below = 1
+	}
+
+	if = {
+		limit = {
+			check_variable = {
+				neighbor_row_below = gol_universe_dimensions
+			}
+		}
+		set_temp_variable = {
+			neighbor_row_below = 0
+		}
+	}
+
+	set_temp_variable = {
+		neighbor_column_before = current_column
+	}
+	subtract_from_temp_variable = {
+		var = neighbor_column_before
+		value = 1
+	}
+
+	if = {
+		limit = {
+			check_variable = {
+				neighbor_column_before < 0
+			}
+		}
+		add_to_temp_variable = {
+			neighbor_column_before = gol_universe_dimensions
+		}
+	}
+
+	set_temp_variable = {
+		neighbor_column_after = current_column
+	}
+	add_to_temp_variable = {
+		var = neighbor_column_after
+		value = 1
+	}
+
+	if = {
+		limit = {
+			check_variable = {
+				neighbor_column_after = gol_universe_dimensions
+			}
+		}
+		set_temp_variable = {
+			neighbor_column_after = 0
+		}
+	}
+}
+
+gol_calculate_neighbors_sum = {
+	set_temp_variable = {
+		neighbors_sum = 0
+	}
+
+	##log = "cell [?current_row]x[?current_column] neighborhood [?neighbor_row_above]x[?neighbor_column_before] [?neighbor_row_above]x[?current_column] [?neighbor_row_above]x[?neighbor_column_after]"
+	##log = "[?current_row]x[?neighbor_column_before] [?current_row]x[?neighbor_column_after]"
+	##log = "[?neighbor_row_below]x[?neighbor_column_before] [?neighbor_row_below]x[?current_column] [?neighbor_row_below]x[?neighbor_column_after]"
+
+	set_temp_variable = {
+		neighbor_index = neighbor_row_above
+	}
+	multiply_temp_variable = {
+		neighbor_index = gol_universe_dimensions
+	}
+	add_to_temp_variable = {
+		neighbor_index = neighbor_column_before
+	}
+
+	add_to_temp_variable = {
+		neighbors_sum = gol_universe^neighbor_index
+	}
+	subtract_from_temp_variable = {
+		neighbors_sum = 1
+	}
+
+	set_temp_variable = {
+		neighbor_index = neighbor_row_above
+	}
+	multiply_temp_variable = {
+		neighbor_index = gol_universe_dimensions
+	}
+	add_to_temp_variable = {
+		neighbor_index = current_column
+	}
+
+	add_to_temp_variable = {
+		neighbors_sum = gol_universe^neighbor_index
+	}
+	subtract_from_temp_variable = {
+		neighbors_sum = 1
+	}
+
+	set_temp_variable = {
+		neighbor_index = neighbor_row_above
+	}
+	multiply_temp_variable = {
+		neighbor_index = gol_universe_dimensions
+	}
+	add_to_temp_variable = {
+		neighbor_index = neighbor_column_after
+	}
+
+	add_to_temp_variable = {
+		neighbors_sum = gol_universe^neighbor_index
+	}
+	subtract_from_temp_variable = {
+		neighbors_sum = 1
+	}
+
+	set_temp_variable = {
+		neighbor_index = current_row
+	}
+	multiply_temp_variable = {
+		neighbor_index = gol_universe_dimensions
+	}
+	add_to_temp_variable = {
+		neighbor_index = neighbor_column_before
+	}
+
+	add_to_temp_variable = {
+		neighbors_sum = gol_universe^neighbor_index
+	}
+	subtract_from_temp_variable = {
+		neighbors_sum = 1
+	}
+
+	set_temp_variable = {
+		neighbor_index = current_row
+	}
+	multiply_temp_variable = {
+		neighbor_index = gol_universe_dimensions
+	}
+	add_to_temp_variable = {
+		neighbor_index = current_column
+	}
+
+	add_to_temp_variable = {
+		neighbors_sum = gol_universe^neighbor_index
+	}
+	subtract_from_temp_variable = {
+		neighbors_sum = 1
+	}
+
+	set_temp_variable = {
+		neighbor_index = current_row
+	}
+	multiply_temp_variable = {
+		neighbor_index = gol_universe_dimensions
+	}
+	add_to_temp_variable = {
+		neighbor_index = neighbor_column_after
+	}
+
+	add_to_temp_variable = {
+		neighbors_sum = gol_universe^neighbor_index
+	}
+	subtract_from_temp_variable = {
+		neighbors_sum = 1
+	}
+
+	set_temp_variable = {
+		neighbor_index = neighbor_row_below
+	}
+	multiply_temp_variable = {
+		neighbor_index = gol_universe_dimensions
+	}
+	add_to_temp_variable = {
+		neighbor_index = neighbor_column_before
+	}
+
+	add_to_temp_variable = {
+		neighbors_sum = gol_universe^neighbor_index
+	}
+	subtract_from_temp_variable = {
+		neighbors_sum = 1
+	}
+
+	set_temp_variable = {
+		neighbor_index = neighbor_row_below
+	}
+	multiply_temp_variable = {
+		neighbor_index = gol_universe_dimensions
+	}
+	add_to_temp_variable = {
+		neighbor_index = current_column
+	}
+
+	add_to_temp_variable = {
+		neighbors_sum = gol_universe^neighbor_index
+	}
+	subtract_from_temp_variable = {
+		neighbors_sum = 1
+	}
+	
+	set_temp_variable = {
+		neighbor_index = neighbor_row_below
+	}
+	multiply_temp_variable = {
+		neighbor_index = gol_universe_dimensions
+	}
+	add_to_temp_variable = {
+		neighbor_index = neighbor_column_after
+	}
+
+	add_to_temp_variable = {
+		neighbors_sum = gol_universe^neighbor_index
+	}
+	subtract_from_temp_variable = {
+		neighbors_sum = 1
+	}
+
+}
+
+gol_calculate_neighbors_sum_buffer_first_row = {
+	set_temp_variable = {
+		neighbors_sum = 0
+	}
+
+	##log = "cell [?current_row]x[?current_column] neighborhood [?neighbor_row_above]x[?neighbor_column_before] [?neighbor_row_above]x[?current_column] [?neighbor_row_above]x[?neighbor_column_after]"
+	##log = "[?current_row]x[?neighbor_column_before] [?current_row]x[?neighbor_column_after]"
+	##log = "[?neighbor_row_below]x[?neighbor_column_before] [?neighbor_row_below]x[?current_column] [?neighbor_row_below]x[?neighbor_column_after]"
+
+	set_temp_variable = {
+		neighbor_index = neighbor_row_above
+	}
+	multiply_temp_variable = {
+		neighbor_index = gol_universe_dimensions
+	}
+	add_to_temp_variable = {
+		neighbor_index = neighbor_column_before
+	}
+
+	add_to_temp_variable = {
+		neighbors_sum = gol_universe^neighbor_index
+	}
+	subtract_from_temp_variable = {
+		neighbors_sum = 1
+	}
+
+	set_temp_variable = {
+		neighbor_index = neighbor_row_above
+	}
+	multiply_temp_variable = {
+		neighbor_index = gol_universe_dimensions
+	}
+	add_to_temp_variable = {
+		neighbor_index = current_column
+	}
+
+	add_to_temp_variable = {
+		neighbors_sum = gol_universe^neighbor_index
+	}
+	subtract_from_temp_variable = {
+		neighbors_sum = 1
+	}
+
+	set_temp_variable = {
+		neighbor_index = neighbor_row_above
+	}
+	multiply_temp_variable = {
+		neighbor_index = gol_universe_dimensions
+	}
+	add_to_temp_variable = {
+		neighbor_index = neighbor_column_after
+	}
+
+	add_to_temp_variable = {
+		neighbors_sum = gol_universe^neighbor_index
+	}
+	subtract_from_temp_variable = {
+		neighbors_sum = 1
+	}
+
+	set_temp_variable = {
+		neighbor_index = current_row
+	}
+	multiply_temp_variable = {
+		neighbor_index = gol_universe_dimensions
+	}
+	add_to_temp_variable = {
+		neighbor_index = neighbor_column_before
+	}
+
+	add_to_temp_variable = {
+		neighbors_sum = gol_universe^neighbor_index
+	}
+	subtract_from_temp_variable = {
+		neighbors_sum = 1
+	}
+
+	set_temp_variable = {
+		neighbor_index = current_row
+	}
+	multiply_temp_variable = {
+		neighbor_index = gol_universe_dimensions
+	}
+	add_to_temp_variable = {
+		neighbor_index = current_column
+	}
+
+	add_to_temp_variable = {
+		neighbors_sum = gol_universe^neighbor_index
+	}
+	subtract_from_temp_variable = {
+		neighbors_sum = 1
+	}
+
+	set_temp_variable = {
+		neighbor_index = current_row
+	}
+	multiply_temp_variable = {
+		neighbor_index = gol_universe_dimensions
+	}
+	add_to_temp_variable = {
+		neighbor_index = neighbor_column_after
+	}
+
+	add_to_temp_variable = {
+		neighbors_sum = gol_universe^neighbor_index
+	}
+	subtract_from_temp_variable = {
+		neighbors_sum = 1
+	}
+
+	set_temp_variable = {
+		neighbor_index = neighbor_column_before
+	}
+
+	add_to_temp_variable = {
+		neighbors_sum = gol_buffer_first_row^neighbor_index
+	}
+	subtract_from_temp_variable = {
+		neighbors_sum = 1
+	}
+
+	set_temp_variable = {
+		neighbor_index = current_column
+	}
+
+	add_to_temp_variable = {
+		neighbors_sum = gol_buffer_first_row^neighbor_index
+	}
+	subtract_from_temp_variable = {
+		neighbors_sum = 1
+	}
+
+	set_temp_variable = {
+		neighbor_index = neighbor_column_after
+	}
+
+	add_to_temp_variable = {
+		neighbors_sum = gol_buffer_first_row^neighbor_index
+	}
+	subtract_from_temp_variable = {
+		neighbors_sum = 1
+	}
+}
