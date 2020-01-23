@@ -32,7 +32,17 @@ gol_create_universe = {
 }
 
 gol_populate_universe = {
-	
+	for_loop_effect = {
+		start = 0
+		end = gol_universe^num
+		value = i
+		if = {
+			limit = { check_variable = { random < 0.5 } }
+			set_variable = {
+				gol_universe^i = 2
+			}
+		}
+	}
 }
 
 gol_update_universe = {

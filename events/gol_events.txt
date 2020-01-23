@@ -14,4 +14,9 @@ country_event = {
 		name = "GoL restart"
 		gol_create_universe = yes
 	}
+
+	option = {
+		name = "GoL populate universe (50%)"
+		gol_populate_universe = yes
+	}
 }
