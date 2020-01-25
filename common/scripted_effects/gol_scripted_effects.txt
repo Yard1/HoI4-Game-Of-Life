@@ -6,200 +6,391 @@ gol_create_universe = {
 		gol_universe_size = gol_universe_dimensions
 	}
 	clear_array = gol_universe
+	for_each_loop = {
+		array = gol_live_cells
+		clear_variable = gol_live_cells_idx^v
+	}
+	clear_array = gol_live_cells
 	resize_array = {
 		array = gol_universe
 		size = gol_universe_size
 		value = 1
 	}
-	clear_array = gol_buffer_first_row
-	resize_array = {
-		array = gol_buffer_first_row
-		size = gol_universe_dimensions
-		value = 1
-	}
-	clear_array = gol_buffer_1
-	resize_array = {
-		array = gol_buffer_1
-		size = gol_universe_dimensions
-		value = 1
-	}
-	clear_array = gol_buffer_2
-	resize_array = {
-		array = gol_buffer_2
-		size = gol_universe_dimensions
-		value = 1
+	for_each_loop = {
+		array = gol_universe
+		clear_variable = neighbors_to_check_idx^i
 	}
 }
 
 gol_populate_universe = {
-	for_loop_effect = {
-		start = 0
-		end = gol_universe^num
-		value = i
+	#gol_create_universe = yes
+	for_each_loop = {
+		array = gol_universe
 		if = {
-			limit = { check_variable = { random < 0.5 } }
+			limit = {
+				check_variable = { v = 1 }
+				check_variable = { random < 0.5 }
+			}
 			set_variable = {
 				gol_universe^i = 2
+			}
+			add_to_array = {
+				gol_live_cells = i
+			}
+			set_variable = {
+				gol_live_cells_idx^i = 1
 			}
 		}
 	}
 }
 
 gol_update_universe = {
-	#log = "UPDATING UNIVERSE"
-	for_loop_effect = {
-		start = 0
-		end = gol_universe_dimensions
-		value = i
-
+	##log = "UPDATING UNIVERSE"
+	for_each_loop = {
+		array = gol_live_cells
+		index = l_idx
+		value = l_val
+		set_temp_variable = {
+			current_row = l_val
+		}
+		divide_temp_variable = {
+			current_row = gol_universe_dimensions
+		}
+		subtract_from_temp_variable = {
+			current_row = 0.5
+		}
+		round_temp_variable = current_row
+		set_temp_variable = {
+			current_column = l_val
+		}
+		set_temp_variable = {
+			current_row_idx = current_row
+		}
+		multiply_temp_variable = {
+			current_row_idx = gol_universe_dimensions
+		}
+		subtract_from_temp_variable = {
+			current_column = current_row_idx
+		}
+		round_temp_variable = current_column
+		gol_get_neighbors_positions = yes
+		gol_calculate_neighbors_sum = yes
+		##log = "Live cell at [?l_val] [?current_row]x[?current_column] has [?neighbors_sum] neighbors"
+		multiply_temp_variable = {
+			neighbors_sum = -1
+		}
 		set_variable = {
-			gol_buffer_first_row^i = gol_universe^i
+			gol_universe^l_val = 0
+		}
+		add_to_variable = {
+			gol_universe^l_val = neighbors_sum
+		}
+		##log = "T: [?neighbor_row_above] B: [?neighbor_row_below]"
+		##log = "L: [?neighbor_column_before] R: [?neighbor_column_after]"
+		set_temp_variable = {
+			neighbor_row_above_idx = neighbor_row_above
+		}
+		multiply_temp_variable = {
+			neighbor_row_above_idx = gol_universe_dimensions
+		}
+		set_temp_variable = {
+			neighbor_row_below_idx = neighbor_row_below
+		}
+		multiply_temp_variable = {
+			neighbor_row_below_idx = gol_universe_dimensions
+		}
+		
+		set_temp_variable = {
+			tl_neighbor = neighbor_row_above_idx
+		}
+		add_to_temp_variable = {
+			tl_neighbor = neighbor_column_before
+		}
+		set_temp_variable = {
+			tc_neighbor = neighbor_row_above_idx
+		}
+		add_to_temp_variable = {
+			tc_neighbor = current_column
+		}
+		set_temp_variable = {
+			tr_neighbor = neighbor_row_above_idx
+		}
+		add_to_temp_variable = {
+			tr_neighbor = neighbor_column_after
+		}
+		set_temp_variable = {
+			l_neighbor = current_row_idx
+		}
+		add_to_temp_variable = {
+			l_neighbor = neighbor_column_before
+		}
+		set_temp_variable = {
+			r_neighbor = current_row_idx
+		}
+		add_to_temp_variable = {
+			r_neighbor = neighbor_column_after
+		}
+		set_temp_variable = {
+			bl_neighbor = neighbor_row_below_idx
+		}
+		add_to_temp_variable = {
+			bl_neighbor = neighbor_column_before
+		}
+		set_temp_variable = {
+			bc_neighbor = neighbor_row_below_idx
+		}
+		add_to_temp_variable = {
+			bc_neighbor = current_column
+		}
+		set_temp_variable = {
+			br_neighbor = neighbor_row_below_idx
+		}
+		add_to_temp_variable = {
+			br_neighbor = neighbor_column_after
+		}
+		if = {
+			limit = {
+				NOT = {
+					has_variable = gol_live_cells_idx^tl_neighbor
+					has_variable = neighbors_to_check_idx^tl_neighbor
+				}
+			}
+			add_to_temp_array = {
+				neighbors_to_check = tl_neighbor
+			}
+			set_variable = {
+				neighbors_to_check_idx^tl_neighbor = 1
+			}
+		}
+		if = {
+			limit = {
+				NOT = {
+					has_variable = gol_live_cells_idx^tc_neighbor
+					has_variable = neighbors_to_check_idx^tc_neighbor
+				}
+			}
+			add_to_temp_array = {
+				neighbors_to_check = tc_neighbor
+			}
+			set_variable = {
+				neighbors_to_check_idx^tc_neighbor = 1
+			}
+		}
+		if = {
+			limit = {
+				NOT = {
+					has_variable = gol_live_cells_idx^tr_neighbor
+					has_variable = neighbors_to_check_idx^tr_neighbor
+				}
+			}
+			add_to_temp_array = {
+				neighbors_to_check = tr_neighbor
+			}
+			set_variable = {
+				neighbors_to_check_idx^tr_neighbor = 1
+			}
+		}
+		if = {
+			limit = {
+				NOT = {
+					has_variable = gol_live_cells_idx^l_neighbor
+					has_variable = neighbors_to_check_idx^l_neighbor
+				}
+			}
+			add_to_temp_array = {
+				neighbors_to_check = l_neighbor
+			}
+			set_variable = {
+				neighbors_to_check_idx^l_neighbor = 1
+			}
+		}
+		if = {
+			limit = {
+				NOT = {
+					has_variable = gol_live_cells_idx^r_neighbor
+					has_variable = neighbors_to_check_idx^r_neighbor
+				}
+			}
+			add_to_temp_array = {
+				neighbors_to_check = r_neighbor
+			}
+			set_variable = {
+				neighbors_to_check_idx^r_neighbor = 1
+			}
+		}
+		if = {
+			limit = {
+				NOT = {
+					has_variable = gol_live_cells_idx^bl_neighbor
+					has_variable = neighbors_to_check_idx^bl_neighbor
+				}
+			}
+			add_to_temp_array = {
+				neighbors_to_check = bl_neighbor
+			}
+			set_variable = {
+				neighbors_to_check_idx^bl_neighbor = 1
+			}
+		}
+		if = {
+			limit = {
+				NOT = {
+					has_variable = gol_live_cells_idx^bc_neighbor
+					has_variable = neighbors_to_check_idx^bc_neighbor
+				}
+			}
+			add_to_temp_array = {
+				neighbors_to_check = bc_neighbor
+			}
+			set_variable = {
+				neighbors_to_check_idx^bc_neighbor = 1
+			}
+		}
+		if = {
+			limit = {
+				NOT = {
+					has_variable = gol_live_cells_idx^br_neighbor
+					has_variable = neighbors_to_check_idx^br_neighbor
+				}
+			}
+			add_to_temp_array = {
+				neighbors_to_check = br_neighbor
+			}
+			set_variable = {
+				neighbors_to_check_idx^br_neighbor = 1
+			}
+		}
+	}
+	for_each_loop = {
+		array = neighbors_to_check
+		index = l_idx
+		value = l_val
+		set_temp_variable = {
+			current_row = l_val
+		}
+		divide_temp_variable = {
+			current_row = gol_universe_dimensions
+		}
+		if = {
+			limit = { check_variable = { current_row > 0 } }
+			subtract_from_temp_variable = {
+				current_row = 0.5
+			}
+			round_temp_variable = current_row
+		}
+		set_temp_variable = {
+			current_column = l_val
+		}
+		set_temp_variable = {
+			current_row_idx = current_row
+		}
+		multiply_temp_variable = {
+			current_row_idx = gol_universe_dimensions
+		}
+		subtract_from_temp_variable = {
+			current_column = current_row_idx
+		}
+		round_temp_variable = current_column
+		gol_get_neighbors_positions = yes
+		gol_calculate_neighbors_sum = yes
+		##log = "Neighbor cell at [?l_val] [?current_row]x[?current_column] has [?neighbors_sum] neighbors"
+		multiply_temp_variable = {
+			neighbors_sum = -1
+		}
+		set_variable = {
+			gol_universe^l_val = 0
+		}
+		add_to_variable = {
+			gol_universe^l_val = neighbors_sum
 		}
 	}
 	set_temp_variable = {
-		end_idx = gol_universe_dimensions
+		i = 0
 	}
-	for_loop_effect = {
-		start = 0
-		end = gol_universe_dimensions
-		value = i
-		#log = "row: [?i]"
+	set_temp_variable = {
+		n = gol_live_cells^num
+	}
+	for_each_loop = {
+		array = gol_live_cells
+		index = l_idx
+		value = l_val
+		break = break_del_loop
+		#log = "l_idx: [?l_idx] i: [?i] n: [?n]"
+		if = {
+			limit = {
+				NOT = {
+					check_variable = {
+						i < n
+					}
+				}
+			}
+			set_temp_variable = {
+				break_del_loop = 1
+			}
+		}
 		set_temp_variable = {
-			idx = i
+			val = gol_live_cells^i
 		}
-
-		for_loop_effect = {
-			start = 0
-			end = gol_universe_dimensions
-			value = j
-			#log = "col: [?j]"
-			set_temp_variable = {
-				current_row = i
-			}
-			set_temp_variable = {
-				next_row = current_row
-			}
-			add_to_temp_variable = {
-				next_row = 1
-			}
-			set_temp_variable = {
-				nextnext_row = next_row
-			}
-			add_to_temp_variable = {
-				nextnext_row = 1
-			}
-			set_temp_variable = {
-				current_column = j
-			}
-			set_temp_variable = {
-				current_index = current_row
-			}
-			multiply_temp_variable = {
-				current_index = gol_universe_dimensions
-			}
-			add_to_temp_variable = {
-				current_index = current_column
-			}
-
-			if = {
-				limit = {
+		if = {
+			limit = {
+				OR = {
 					check_variable = {
-						current_row = 0
+						gol_universe^val = -2
 					}
-				}
-				gol_get_neighbors_positions = yes
-				gol_calculate_neighbors_sum = yes
-
-				if = {
-					limit = { check_variable = { neighbors_sum = 3 } }
-					set_variable = {
-						gol_buffer_1^current_column = 2
-					}
-				}
-				else_if = {
-					limit = { check_variable = { neighbors_sum = 4 } }
-					set_variable = {
-						gol_buffer_1^current_column = gol_universe^current_index
-					}
-				}
-				else = {
-					set_variable = {
-						gol_buffer_1^current_column = 1
-					}
-				}
-			}
-			set_temp_variable = {
-				current_row = i
-			}
-			add_to_temp_variable = {
-				current_row = 1
-			}
-			add_to_temp_variable = {
-				current_index = gol_universe_dimensions
-			}
-			gol_get_neighbors_positions = yes
-			if = {
-				limit = {
 					check_variable = {
-						nextnext_row = gol_universe_dimensions
+						gol_universe^val = -3
 					}
 				}
-				gol_calculate_neighbors_sum_buffer_first_row = yes
-
-			}
-			else = {
-				gol_calculate_neighbors_sum = yes
-			}
-
-			if = {
-				limit = { check_variable = { neighbors_sum = 3 } }
-				set_variable = {
-					gol_buffer_2^current_column = 2
-				}
-			}
-			else_if = {
-				limit = { check_variable = { neighbors_sum = 4 } }
-				set_variable = {
-					gol_buffer_2^current_column = gol_universe^current_index
-				}
-			}
-			else = {
-				set_variable = {
-					gol_buffer_2^current_column = 1
-				}
-			}
-		}
-
-		for_loop_effect = {
-			start = 0
-			end = gol_universe_dimensions
-			value = k
-			#log = "gol_buffer_1^[?k] = [?gol_buffer_1^k]"
-			set_temp_variable = {
-				current_index = idx
-			}
-			multiply_temp_variable = {
-				current_index = gol_universe_dimensions
-			}
-			add_to_temp_variable = {
-				current_index = k
 			}
 			set_variable = {
-				gol_universe^current_index = gol_buffer_1^k
+				gol_universe^val = 2
 			}
-			set_variable = {
-				gol_buffer_1^k = gol_buffer_2^k
+			add_to_temp_variable = {
+				i = 1
 			}
 		}
-		for_loop_effect = {
-			start = 0
-			end = gol_universe_dimensions
-			value = k
-			#log = "gol_buffer_2^[?k] = [?gol_buffer_2^k]"
+		else = {
+			set_variable = {
+				gol_universe^val = 1
+			}
+			remove_from_array = {
+				array = gol_live_cells
+				index = i
+			}
+			clear_variable = gol_live_cells_idx^val
+			subtract_from_temp_variable = {
+				n = 1
+			}
 		}
 	}
+	for_each_loop = {
+		array = neighbors_to_check
+		index = l_idx
+		value = l_val
+		if = {
+			limit = {
+				check_variable = {
+					gol_universe^l_val = -3
+				}
+			}
+			##log = "Setting [?l_val] as an alive cell"
+			set_variable = {
+				gol_universe^l_val = 2
+			}
+			add_to_array = {
+				gol_live_cells = l_val
+			}
+			set_variable = { gol_live_cells_idx^l_val = 1 }
+		}
+		else = {
+			set_variable = {
+				gol_universe^l_val = 1
+			}
+		}
+		clear_variable = neighbors_to_check_idx^l_val
+	}
 
-	#log = "DONE UPDATING UNIVERSE"
+	##log = "DONE UPDATING UNIVERSE"
 }
 
 gol_get_neighbors_positions = {
@@ -286,306 +477,157 @@ gol_calculate_neighbors_sum = {
 		neighbors_sum = 0
 	}
 
-	##log = "cell [?current_row]x[?current_column] neighborhood [?neighbor_row_above]x[?neighbor_column_before] [?neighbor_row_above]x[?current_column] [?neighbor_row_above]x[?neighbor_column_after]"
-	##log = "[?current_row]x[?neighbor_column_before] [?current_row]x[?neighbor_column_after]"
-	##log = "[?neighbor_row_below]x[?neighbor_column_before] [?neighbor_row_below]x[?current_column] [?neighbor_row_below]x[?neighbor_column_after]"
+	####log = "cell [?current_row]x[?current_column] neighborhood [?neighbor_row_above]x[?neighbor_column_before] [?neighbor_row_above]x[?current_column] [?neighbor_row_above]x[?neighbor_column_after]"
+	####log = "[?current_row]x[?neighbor_column_before] [?current_row]x[?neighbor_column_after]"
+	####log = "[?neighbor_row_below]x[?neighbor_column_before] [?neighbor_row_below]x[?current_column] [?neighbor_row_below]x[?neighbor_column_after]"
 
 	set_temp_variable = {
-		neighbor_index = neighbor_row_above
+		neighbor_row_above_idx = neighbor_row_above
 	}
 	multiply_temp_variable = {
-		neighbor_index = gol_universe_dimensions
+		neighbor_row_above_idx = gol_universe_dimensions
+	}
+
+	set_temp_variable = {
+		current_row_idx = current_row
+	}
+	multiply_temp_variable = {
+		current_row_idx = gol_universe_dimensions
+	}
+
+	set_temp_variable = {
+		neighbor_row_below_idx = neighbor_row_below
+	}
+	multiply_temp_variable = {
+		neighbor_row_below_idx = gol_universe_dimensions
+	}
+
+	set_temp_variable = {
+		neighbor_index = neighbor_row_above_idx
 	}
 	add_to_temp_variable = {
 		neighbor_index = neighbor_column_before
 	}
 
-	add_to_temp_variable = {
-		neighbors_sum = gol_universe^neighbor_index
-	}
-	subtract_from_temp_variable = {
-		neighbors_sum = 1
+	if = {
+		limit = {
+			has_variable = gol_live_cells_idx^neighbor_index
+		}
+		add_to_temp_variable = {
+			neighbors_sum = 1
+		}
 	}
 
 	set_temp_variable = {
-		neighbor_index = neighbor_row_above
-	}
-	multiply_temp_variable = {
-		neighbor_index = gol_universe_dimensions
+		neighbor_index = neighbor_row_above_idx
 	}
 	add_to_temp_variable = {
 		neighbor_index = current_column
 	}
 
-	add_to_temp_variable = {
-		neighbors_sum = gol_universe^neighbor_index
-	}
-	subtract_from_temp_variable = {
-		neighbors_sum = 1
+	if = {
+		limit = {
+			has_variable = gol_live_cells_idx^neighbor_index
+		}
+		add_to_temp_variable = {
+			neighbors_sum = 1
+		}
 	}
 
 	set_temp_variable = {
-		neighbor_index = neighbor_row_above
-	}
-	multiply_temp_variable = {
-		neighbor_index = gol_universe_dimensions
+		neighbor_index = neighbor_row_above_idx
 	}
 	add_to_temp_variable = {
 		neighbor_index = neighbor_column_after
 	}
 
-	add_to_temp_variable = {
-		neighbors_sum = gol_universe^neighbor_index
-	}
-	subtract_from_temp_variable = {
-		neighbors_sum = 1
+	if = {
+		limit = {
+			has_variable = gol_live_cells_idx^neighbor_index
+		}
+		add_to_temp_variable = {
+			neighbors_sum = 1
+		}
 	}
 
 	set_temp_variable = {
-		neighbor_index = current_row
-	}
-	multiply_temp_variable = {
-		neighbor_index = gol_universe_dimensions
+		neighbor_index = current_row_idx
 	}
 	add_to_temp_variable = {
 		neighbor_index = neighbor_column_before
 	}
 
-	add_to_temp_variable = {
-		neighbors_sum = gol_universe^neighbor_index
-	}
-	subtract_from_temp_variable = {
-		neighbors_sum = 1
-	}
-
-	set_temp_variable = {
-		neighbor_index = current_row
-	}
-	multiply_temp_variable = {
-		neighbor_index = gol_universe_dimensions
-	}
-	add_to_temp_variable = {
-		neighbor_index = current_column
-	}
-
-	add_to_temp_variable = {
-		neighbors_sum = gol_universe^neighbor_index
-	}
-	subtract_from_temp_variable = {
-		neighbors_sum = 1
+	if = {
+		limit = {
+			has_variable = gol_live_cells_idx^neighbor_index
+		}
+		add_to_temp_variable = {
+			neighbors_sum = 1
+		}
 	}
 
 	set_temp_variable = {
-		neighbor_index = current_row
-	}
-	multiply_temp_variable = {
-		neighbor_index = gol_universe_dimensions
+		neighbor_index = current_row_idx
 	}
 	add_to_temp_variable = {
 		neighbor_index = neighbor_column_after
 	}
 
-	add_to_temp_variable = {
-		neighbors_sum = gol_universe^neighbor_index
-	}
-	subtract_from_temp_variable = {
-		neighbors_sum = 1
+	if = {
+		limit = {
+			has_variable = gol_live_cells_idx^neighbor_index
+		}
+		add_to_temp_variable = {
+			neighbors_sum = 1
+		}
 	}
 
 	set_temp_variable = {
-		neighbor_index = neighbor_row_below
-	}
-	multiply_temp_variable = {
-		neighbor_index = gol_universe_dimensions
+		neighbor_index = neighbor_row_below_idx
 	}
 	add_to_temp_variable = {
 		neighbor_index = neighbor_column_before
 	}
 
-	add_to_temp_variable = {
-		neighbors_sum = gol_universe^neighbor_index
-	}
-	subtract_from_temp_variable = {
-		neighbors_sum = 1
+	if = {
+		limit = {
+			has_variable = gol_live_cells_idx^neighbor_index
+		}
+		add_to_temp_variable = {
+			neighbors_sum = 1
+		}
 	}
 
 	set_temp_variable = {
-		neighbor_index = neighbor_row_below
-	}
-	multiply_temp_variable = {
-		neighbor_index = gol_universe_dimensions
+		neighbor_index = neighbor_row_below_idx
 	}
 	add_to_temp_variable = {
 		neighbor_index = current_column
 	}
 
-	add_to_temp_variable = {
-		neighbors_sum = gol_universe^neighbor_index
-	}
-	subtract_from_temp_variable = {
-		neighbors_sum = 1
+	if = {
+		limit = {
+			has_variable = gol_live_cells_idx^neighbor_index
+		}
+		add_to_temp_variable = {
+			neighbors_sum = 1
+		}
 	}
 	
 	set_temp_variable = {
-		neighbor_index = neighbor_row_below
-	}
-	multiply_temp_variable = {
-		neighbor_index = gol_universe_dimensions
+		neighbor_index = neighbor_row_below_idx
 	}
 	add_to_temp_variable = {
 		neighbor_index = neighbor_column_after
 	}
 
-	add_to_temp_variable = {
-		neighbors_sum = gol_universe^neighbor_index
-	}
-	subtract_from_temp_variable = {
-		neighbors_sum = 1
-	}
-
-}
-
-gol_calculate_neighbors_sum_buffer_first_row = {
-	set_temp_variable = {
-		neighbors_sum = 0
+	if = {
+		limit = {
+			has_variable = gol_live_cells_idx^neighbor_index
+		}
+		add_to_temp_variable = {
+			neighbors_sum = 1
+		}
 	}
 
-	##log = "cell [?current_row]x[?current_column] neighborhood [?neighbor_row_above]x[?neighbor_column_before] [?neighbor_row_above]x[?current_column] [?neighbor_row_above]x[?neighbor_column_after]"
-	##log = "[?current_row]x[?neighbor_column_before] [?current_row]x[?neighbor_column_after]"
-	##log = "[?neighbor_row_below]x[?neighbor_column_before] [?neighbor_row_below]x[?current_column] [?neighbor_row_below]x[?neighbor_column_after]"
-
-	set_temp_variable = {
-		neighbor_index = neighbor_row_above
-	}
-	multiply_temp_variable = {
-		neighbor_index = gol_universe_dimensions
-	}
-	add_to_temp_variable = {
-		neighbor_index = neighbor_column_before
-	}
-
-	add_to_temp_variable = {
-		neighbors_sum = gol_universe^neighbor_index
-	}
-	subtract_from_temp_variable = {
-		neighbors_sum = 1
-	}
-
-	set_temp_variable = {
-		neighbor_index = neighbor_row_above
-	}
-	multiply_temp_variable = {
-		neighbor_index = gol_universe_dimensions
-	}
-	add_to_temp_variable = {
-		neighbor_index = current_column
-	}
-
-	add_to_temp_variable = {
-		neighbors_sum = gol_universe^neighbor_index
-	}
-	subtract_from_temp_variable = {
-		neighbors_sum = 1
-	}
-
-	set_temp_variable = {
-		neighbor_index = neighbor_row_above
-	}
-	multiply_temp_variable = {
-		neighbor_index = gol_universe_dimensions
-	}
-	add_to_temp_variable = {
-		neighbor_index = neighbor_column_after
-	}
-
-	add_to_temp_variable = {
-		neighbors_sum = gol_universe^neighbor_index
-	}
-	subtract_from_temp_variable = {
-		neighbors_sum = 1
-	}
-
-	set_temp_variable = {
-		neighbor_index = current_row
-	}
-	multiply_temp_variable = {
-		neighbor_index = gol_universe_dimensions
-	}
-	add_to_temp_variable = {
-		neighbor_index = neighbor_column_before
-	}
-
-	add_to_temp_variable = {
-		neighbors_sum = gol_universe^neighbor_index
-	}
-	subtract_from_temp_variable = {
-		neighbors_sum = 1
-	}
-
-	set_temp_variable = {
-		neighbor_index = current_row
-	}
-	multiply_temp_variable = {
-		neighbor_index = gol_universe_dimensions
-	}
-	add_to_temp_variable = {
-		neighbor_index = current_column
-	}
-
-	add_to_temp_variable = {
-		neighbors_sum = gol_universe^neighbor_index
-	}
-	subtract_from_temp_variable = {
-		neighbors_sum = 1
-	}
-
-	set_temp_variable = {
-		neighbor_index = current_row
-	}
-	multiply_temp_variable = {
-		neighbor_index = gol_universe_dimensions
-	}
-	add_to_temp_variable = {
-		neighbor_index = neighbor_column_after
-	}
-
-	add_to_temp_variable = {
-		neighbors_sum = gol_universe^neighbor_index
-	}
-	subtract_from_temp_variable = {
-		neighbors_sum = 1
-	}
-
-	set_temp_variable = {
-		neighbor_index = neighbor_column_before
-	}
-
-	add_to_temp_variable = {
-		neighbors_sum = gol_buffer_first_row^neighbor_index
-	}
-	subtract_from_temp_variable = {
-		neighbors_sum = 1
-	}
-
-	set_temp_variable = {
-		neighbor_index = current_column
-	}
-
-	add_to_temp_variable = {
-		neighbors_sum = gol_buffer_first_row^neighbor_index
-	}
-	subtract_from_temp_variable = {
-		neighbors_sum = 1
-	}
-
-	set_temp_variable = {
-		neighbor_index = neighbor_column_after
-	}
-
-	add_to_temp_variable = {
-		neighbors_sum = gol_buffer_first_row^neighbor_index
-	}
-	subtract_from_temp_variable = {
-		neighbors_sum = 1
-	}
 }
