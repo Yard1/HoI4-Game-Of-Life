@@ -30,10 +30,26 @@ scripted_gui = {
 					set_variable = {
 						gol_universe^i = 2
 					}
+					add_to_array = {
+						gol_live_cells = i
+					}
+					set_variable = {
+						gol_live_cells_idx^i = 1
+					}
 				}
 				else = {
 					set_variable = {
 						gol_universe^i = 1
+					}
+					if = {
+						limit = {
+							has_variable = gol_live_cells_idx^i
+						}
+						remove_from_array = {
+							array = gol_live_cells
+							index = gol_live_cells_idx^i
+						}
+						clear_variable = gol_live_cells_idx^i
 					}
 				}
 			}
