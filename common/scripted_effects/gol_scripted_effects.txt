@@ -18,7 +18,7 @@ gol_create_universe = {
 	}
 	for_each_loop = {
 		array = gol_universe
-		clear_variable = neighbors_to_check_idx^i
+		clear_variable = gol_neighbors_to_check_idx^i
 	}
 }
 
@@ -155,112 +155,112 @@ gol_update_universe = {
 			limit = {
 				NOT = {
 					has_variable = gol_live_cells_idx^tl_neighbor
-					has_variable = neighbors_to_check_idx^tl_neighbor
+					has_variable = gol_neighbors_to_check_idx^tl_neighbor
 				}
 			}
 			add_to_temp_array = {
 				neighbors_to_check = tl_neighbor
 			}
 			set_variable = {
-				neighbors_to_check_idx^tl_neighbor = 1
+				gol_neighbors_to_check_idx^tl_neighbor = 1
 			}
 		}
 		if = {
 			limit = {
 				NOT = {
 					has_variable = gol_live_cells_idx^tc_neighbor
-					has_variable = neighbors_to_check_idx^tc_neighbor
+					has_variable = gol_neighbors_to_check_idx^tc_neighbor
 				}
 			}
 			add_to_temp_array = {
 				neighbors_to_check = tc_neighbor
 			}
 			set_variable = {
-				neighbors_to_check_idx^tc_neighbor = 1
+				gol_neighbors_to_check_idx^tc_neighbor = 1
 			}
 		}
 		if = {
 			limit = {
 				NOT = {
 					has_variable = gol_live_cells_idx^tr_neighbor
-					has_variable = neighbors_to_check_idx^tr_neighbor
+					has_variable = gol_neighbors_to_check_idx^tr_neighbor
 				}
 			}
 			add_to_temp_array = {
 				neighbors_to_check = tr_neighbor
 			}
 			set_variable = {
-				neighbors_to_check_idx^tr_neighbor = 1
+				gol_neighbors_to_check_idx^tr_neighbor = 1
 			}
 		}
 		if = {
 			limit = {
 				NOT = {
 					has_variable = gol_live_cells_idx^l_neighbor
-					has_variable = neighbors_to_check_idx^l_neighbor
+					has_variable = gol_neighbors_to_check_idx^l_neighbor
 				}
 			}
 			add_to_temp_array = {
 				neighbors_to_check = l_neighbor
 			}
 			set_variable = {
-				neighbors_to_check_idx^l_neighbor = 1
+				gol_neighbors_to_check_idx^l_neighbor = 1
 			}
 		}
 		if = {
 			limit = {
 				NOT = {
 					has_variable = gol_live_cells_idx^r_neighbor
-					has_variable = neighbors_to_check_idx^r_neighbor
+					has_variable = gol_neighbors_to_check_idx^r_neighbor
 				}
 			}
 			add_to_temp_array = {
 				neighbors_to_check = r_neighbor
 			}
 			set_variable = {
-				neighbors_to_check_idx^r_neighbor = 1
+				gol_neighbors_to_check_idx^r_neighbor = 1
 			}
 		}
 		if = {
 			limit = {
 				NOT = {
 					has_variable = gol_live_cells_idx^bl_neighbor
-					has_variable = neighbors_to_check_idx^bl_neighbor
+					has_variable = gol_neighbors_to_check_idx^bl_neighbor
 				}
 			}
 			add_to_temp_array = {
 				neighbors_to_check = bl_neighbor
 			}
 			set_variable = {
-				neighbors_to_check_idx^bl_neighbor = 1
+				gol_neighbors_to_check_idx^bl_neighbor = 1
 			}
 		}
 		if = {
 			limit = {
 				NOT = {
 					has_variable = gol_live_cells_idx^bc_neighbor
-					has_variable = neighbors_to_check_idx^bc_neighbor
+					has_variable = gol_neighbors_to_check_idx^bc_neighbor
 				}
 			}
 			add_to_temp_array = {
 				neighbors_to_check = bc_neighbor
 			}
 			set_variable = {
-				neighbors_to_check_idx^bc_neighbor = 1
+				gol_neighbors_to_check_idx^bc_neighbor = 1
 			}
 		}
 		if = {
 			limit = {
 				NOT = {
 					has_variable = gol_live_cells_idx^br_neighbor
-					has_variable = neighbors_to_check_idx^br_neighbor
+					has_variable = gol_neighbors_to_check_idx^br_neighbor
 				}
 			}
 			add_to_temp_array = {
 				neighbors_to_check = br_neighbor
 			}
 			set_variable = {
-				neighbors_to_check_idx^br_neighbor = 1
+				gol_neighbors_to_check_idx^br_neighbor = 1
 			}
 		}
 	}
@@ -312,22 +312,22 @@ gol_update_universe = {
 		}
 	}
 	set_temp_variable = {
-		i = 0
+		idx = 0
 	}
 	set_temp_variable = {
-		n = gol_live_cells^num
+		live_cells_num = gol_live_cells^num
 	}
 	for_each_loop = {
 		array = gol_live_cells
 		index = l_idx
 		value = l_val
 		break = break_del_loop
-		#log = "l_idx: [?l_idx] i: [?i] n: [?n]"
+		#log = "l_idx: [?l_idx] idx: [?idx] live_cells_num: [?live_cells_num]"
 		if = {
 			limit = {
 				NOT = {
 					check_variable = {
-						i < n
+						idx < live_cells_num
 					}
 				}
 			}
@@ -336,7 +336,7 @@ gol_update_universe = {
 			}
 		}
 		set_temp_variable = {
-			val = gol_live_cells^i
+			val = gol_live_cells^idx
 		}
 		if = {
 			limit = {
@@ -353,7 +353,7 @@ gol_update_universe = {
 				gol_universe^val = 2
 			}
 			add_to_temp_variable = {
-				i = 1
+				idx = 1
 			}
 		}
 		else = {
@@ -362,11 +362,11 @@ gol_update_universe = {
 			}
 			remove_from_array = {
 				array = gol_live_cells
-				index = i
+				index = idx
 			}
 			clear_variable = gol_live_cells_idx^val
 			subtract_from_temp_variable = {
-				n = 1
+				live_cells_num = 1
 			}
 		}
 	}
@@ -396,7 +396,7 @@ gol_update_universe = {
 				gol_universe^l_val = 1
 			}
 		}
-		clear_variable = neighbors_to_check_idx^l_val
+		clear_variable = gol_neighbors_to_check_idx^l_val
 	}
 	##log = "DONE UPDATING UNIVERSE"
 }
