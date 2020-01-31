@@ -1,0 +1,14 @@
+gol_decision_category = {
+	gol_open_window = {
+		cost = 0
+		visible = {
+			is_ai = no
+			NOT = { has_variable = gol_opened }
+		}
+		complete_effect = {
+			set_variable = {
+				gol_opened = 1
+			}
+		}
+	}
+}

@@ -3,10 +3,10 @@ scripted_gui = {
 		context_type = player_context
 		window_name = "gol_gui_window"
 		visible = {
-			has_variable = gol_universe_dimensions
-			#check_variable = {
-			#	gol_opened > 0
-			#}
+			has_variable = global.gol_universe_dimensions
+			check_variable = {
+				gol_opened > 0
+			}
 		}
 		ai_enabled = {
 			always = no
@@ -19,6 +19,25 @@ scripted_gui = {
 			}
 		}
 		effects = {
+			gol_close_click = {
+				clear_variable = gol_opened
+			}
+			gol_reload_click = {
+				hidden_effect = {
+					gol_create_universe = yes
+				}
+			}
+			gol_forward_click = {
+				hidden_effect = {
+					gol_update_universe = yes
+				}
+			}
+			gol_random_click = {
+				hidden_effect = {
+					gol_create_universe = yes
+					gol_populate_universe = yes
+				}
+			}
 			gol_cell_click = {
 				if = {
 					limit = {
@@ -65,6 +84,12 @@ scripted_gui = {
 		visible = {
 			is_ai = yes
 			has_country_flag = gol_on_hourly
+			has_variable = global.gol_player
+			var:global.gol_player = {
+				check_variable = {
+					gol_opened > 0
+				}
+			}
 		}
 		ai_enabled = {
 			always = yes
@@ -76,7 +101,7 @@ scripted_gui = {
 				var:global.gol_player = {
 					if = {
 						limit = {
-							has_variable = gol_universe_dimensions
+							has_variable = global.gol_universe_dimensions
 						}
 						gol_update_universe = yes
 					}

@@ -1,18 +1,52 @@
 on_actions = {
 	on_startup = {
 		effect = {
-			every_country = {
+			set_variable = {
+				global.gol_universe_dimensions = 64
+			}
+			random_country = {
 				limit = { is_ai = no }
-				set_variable = {
-					gol_universe_dimensions = 64
-				}
 				gol_create_universe = yes
 				set_variable = { global.gol_player = THIS }
+				set_country_flag = gol_player
 			}
 			random_country = {
 				limit = { is_ai = yes }
 				set_variable = { global.gol_on_hourly = THIS }
 				set_country_flag = gol_on_hourly
+			}
+		}
+	}
+
+	on_daily = {
+		effect = {
+			if = {
+				limit = {
+					is_ai = no
+					has_country_flag = gol_on_hourly
+				}
+				clr_country_flag = gol_on_hourly
+				gol_cleanup = yes
+				random_country = {
+					limit = { is_ai = yes }
+					set_variable = { global.gol_on_hourly = THIS }
+					set_country_flag = gol_on_hourly
+				}
+			}
+			else_if = {
+				limit = {
+					is_ai = yes
+					has_country_flag = gol_player
+				}
+				clr_country_flag = gol_player
+				gol_cleanup = yes
+				random_country = {
+					limit = { is_ai = no }
+					gol_create_universe = yes
+					set_variable = { global.gol_player = THIS }
+					clear_variable = gol_opened
+					set_country_flag = gol_player
+				}
 			}
 		}
 	}

@@ -3,19 +3,56 @@ guiTypes = {
 		name = "gol_gui_window"
 		position = { x = 0 y = 0 }	
 		
-		size = { width = 548 height = 512 }
+		size = { width = 576 height = 548 }
 		
 		fade_time = 300
 		fade_type = linear
 		moveable = yes
-		show_sound = menu_open_window
 		click_to_front = yes
-        
+		origo = center
+		show_sound = pop_up
+
 		orientation = center
-        
+
 		background = {
 			name = "Background"
 			quadTextureSprite = "GFX_tiled_plain_bg"
+		}
+
+		buttonType = {
+			name = "gol_reload"
+			quadTextureSprite = "GFX_browser_refresh"
+			position = { x = -43 y = 50 }
+			pdx_tooltip = "BROWSER_RELOAD"
+			clicksound = click_default
+			Orientation = UPPER_RIGHT
+		}
+
+		buttonType = {
+			name = "gol_forward"
+			quadTextureSprite = "GFX_browser_forward"
+			position = { x = -43 y = 100 }
+			pdx_tooltip = "BROWSER_FORWARD"
+			clicksound = click_default
+			Orientation = UPPER_RIGHT
+		}
+
+		buttonType = {
+			name = "gol_random"
+			quadTextureSprite = "privacy"
+			position = { x = -43 y = 150 }
+			pdx_tooltip = "GOL_POPULATE"
+			Orientation = UPPER_RIGHT
+			clicksound = click_default
+		}
+
+		buttonType = {
+			name = "gol_close"
+			quadTextureSprite = "GFX_closebutton"
+			position = { x = -36 y = 4 }
+			pdx_tooltip = "CLOSE_WINDOW"
+			clicksound = click_close
+			Orientation = UPPER_RIGHT
 		}
 		
 		containerWindowType = {
@@ -28,10 +65,10 @@ guiTypes = {
 				name = "Background"
 				quadTextureSprite = "GFX_tiled_window_1b_thin_border"
 			}
-			
+
 			gridboxtype = {
 				name = "gol_universe_grid"
-				position = { x = -248 y = 0 }
+				position = { x = -240 y = 12 }
 				size = { width = 512 height = 100%% }
 				slotsize = { width = 8 height = 8 }
 				max_slots_horizontal = 64

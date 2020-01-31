@@ -3,7 +3,14 @@ add_namespace = game_of_life
 country_event = {
 	id = game_of_life.1
 	is_triggered_only = yes
-	hidden = yes
+	title = "GoL debug"
+
+	option = {
+		name = "GoL show"
+		set_variable = {
+			gol_opened = 1
+		}
+	}
 
 	option = {
 		name = "GoL update"

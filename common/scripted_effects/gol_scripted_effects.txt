@@ -1,9 +1,9 @@
 gol_create_universe = {
 	set_temp_variable = {
-		gol_universe_size = gol_universe_dimensions
+		gol_universe_size = global.gol_universe_dimensions
 	}
 	multiply_temp_variable = {
-		gol_universe_size = gol_universe_dimensions
+		gol_universe_size = global.gol_universe_dimensions
 	}
 	clear_array = gol_universe
 	for_each_loop = {
@@ -22,8 +22,14 @@ gol_create_universe = {
 	}
 }
 
+gol_cleanup = {
+	clear_variable = gol_opened
+	gol_create_universe = yes
+	clear_array = gol_universe
+	clear_array = gol_live_cells
+}
+
 gol_populate_universe = {
-	#gol_create_universe = yes
 	for_each_loop = {
 		array = gol_universe
 		if = {
@@ -58,7 +64,7 @@ gol_update_universe = {
 			current_row = l_val
 		}
 		divide_temp_variable = {
-			current_row = gol_universe_dimensions
+			current_row = global.gol_universe_dimensions
 		}
 		subtract_from_temp_variable = {
 			current_row = 0.5
@@ -71,7 +77,7 @@ gol_update_universe = {
 			current_row_idx = current_row
 		}
 		multiply_temp_variable = {
-			current_row_idx = gol_universe_dimensions
+			current_row_idx = global.gol_universe_dimensions
 		}
 		subtract_from_temp_variable = {
 			current_column = current_row_idx
@@ -95,13 +101,13 @@ gol_update_universe = {
 			neighbor_row_above_idx = neighbor_row_above
 		}
 		multiply_temp_variable = {
-			neighbor_row_above_idx = gol_universe_dimensions
+			neighbor_row_above_idx = global.gol_universe_dimensions
 		}
 		set_temp_variable = {
 			neighbor_row_below_idx = neighbor_row_below
 		}
 		multiply_temp_variable = {
-			neighbor_row_below_idx = gol_universe_dimensions
+			neighbor_row_below_idx = global.gol_universe_dimensions
 		}
 		set_temp_variable = {
 			tl_neighbor = neighbor_row_above_idx
@@ -272,7 +278,7 @@ gol_update_universe = {
 			current_row = l_val
 		}
 		divide_temp_variable = {
-			current_row = gol_universe_dimensions
+			current_row = global.gol_universe_dimensions
 		}
 		if = {
 			limit = {
@@ -292,7 +298,7 @@ gol_update_universe = {
 			current_row_idx = current_row
 		}
 		multiply_temp_variable = {
-			current_row_idx = gol_universe_dimensions
+			current_row_idx = global.gol_universe_dimensions
 		}
 		subtract_from_temp_variable = {
 			current_column = current_row_idx
@@ -415,7 +421,7 @@ gol_get_neighbors_positions = {
 			}
 		}
 		set_temp_variable = {
-			neighbor_row_above = gol_universe_dimensions
+			neighbor_row_above = global.gol_universe_dimensions
 		}
 		subtract_from_temp_variable = {
 			neighbor_row_above = 1
@@ -430,7 +436,7 @@ gol_get_neighbors_positions = {
 	if = {
 		limit = {
 			check_variable = {
-				neighbor_row_below = gol_universe_dimensions
+				neighbor_row_below = global.gol_universe_dimensions
 			}
 		}
 		set_temp_variable = {
@@ -451,7 +457,7 @@ gol_get_neighbors_positions = {
 			}
 		}
 		add_to_temp_variable = {
-			neighbor_column_before = gol_universe_dimensions
+			neighbor_column_before = global.gol_universe_dimensions
 		}
 	}
 	set_temp_variable = {
@@ -464,7 +470,7 @@ gol_get_neighbors_positions = {
 	if = {
 		limit = {
 			check_variable = {
-				neighbor_column_after = gol_universe_dimensions
+				neighbor_column_after = global.gol_universe_dimensions
 			}
 		}
 		set_temp_variable = {
@@ -484,19 +490,19 @@ gol_calculate_neighbors_sum = {
 		neighbor_row_above_idx = neighbor_row_above
 	}
 	multiply_temp_variable = {
-		neighbor_row_above_idx = gol_universe_dimensions
+		neighbor_row_above_idx = global.gol_universe_dimensions
 	}
 	set_temp_variable = {
 		current_row_idx = current_row
 	}
 	multiply_temp_variable = {
-		current_row_idx = gol_universe_dimensions
+		current_row_idx = global.gol_universe_dimensions
 	}
 	set_temp_variable = {
 		neighbor_row_below_idx = neighbor_row_below
 	}
 	multiply_temp_variable = {
-		neighbor_row_below_idx = gol_universe_dimensions
+		neighbor_row_below_idx = global.gol_universe_dimensions
 	}
 	set_temp_variable = {
 		neighbor_index = neighbor_row_above_idx
